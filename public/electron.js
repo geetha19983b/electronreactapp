@@ -4,13 +4,13 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const ipc = electron.ipcMain;
 const isDev = require('electron-is-dev');
-
+const powershell = require('node-powershell');
 let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900, height: 680, webPreferences: {
-      //nodeIntegration: true,
+      nodeIntegration: true,
       preload: __dirname + '/preload.js'
     }
   });
@@ -32,8 +32,33 @@ app.on('activate', () => {
   }
 });
 
-
 ipc.on('exec-shellscript', function (event, data) {
+  // Create the PS Instance
+  let ps = new powershell({
+    executionPolicy: 'Bypass',
+    noProfile: true
+})
+
+ps.addCommand("C:\\Users\\Geetha\\codes\\electron\\electron-react-app\\public\\Get-Drives.ps1", [
+ // ps.addCommand("./Get-Drives", [
+   { ComputerName: data }
+])
+
+    ps.invoke()
+    .then(output => {
+        console.log(output)
+        mainWindow.webContents.send("scriptResults",`${output}`);
+    })
+    .catch(err => {
+        console.error(err)
+        mainWindow.webContents.send('scriptResults', `error:${err}`);
+        ps.dispose()
+    })
+
+
+});
+
+ipc.on('exec-shellscript1', function (event, data) {
   console.log('starting!' + JSON.stringify(data));
    var spawn = require("child_process").spawn, child;
   const scriptfile = "C:\\Users\\Geetha\\codes\\electron\\electron-react-app\\public\\Get-Drives.ps1 -ComputerName";
