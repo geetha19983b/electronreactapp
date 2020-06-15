@@ -1,0 +1,3 @@
+export const FETCH_SCRIPTS = 'FETCH_SCRIPTS';
+export const FETCH_SCRIPT = 'FETCH_SCRIPT';
+export const EXECUTE_SCRIPT = 'EXECUTE_SCRIPT';
