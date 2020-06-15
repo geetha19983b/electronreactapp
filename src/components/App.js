@@ -10,9 +10,9 @@ import { executeScript } from '../actions';
 
 class App extends React.Component {
   componentDidMount() {
-    window.ipcRenderer.on('scriptResults', (evt, data) => {
-      this.props.executeScript(data);
-    });
+    // window.ipcRenderer.on('scriptResults', (evt, data) => {
+    //   this.props.executeScript(data);
+    // });
 
   }
   render() {

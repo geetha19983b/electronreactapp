@@ -15,38 +15,13 @@ export const fetchScript = scriptId => async (dispatch, getState) => {
 };
 
 export const executeScript = (script) => async (dispatch) => {
-
   const currScript = script;
- 
-  // // Create the PS Instance
-  // let ps = new window.powershell({
-  //   executionPolicy: 'Bypass',
-  //   noProfile: true
-  // })
-
-  // ps.addCommand(currScript.path)
-  //   .then(() => ps.addParameters([
-  //     currScript.params.map(parm => {
-  //       return `{${parm.paramName} : ${parm.paramValue}},`
-  //     })
-  //   ]));
-  // const response = await ps.invoke();
-  // const responseop = {
-  //   ...script,
-  //   output: response
-  // };
-   dispatch({ type: EXECUTE_SCRIPT, payload: currScript });
-
-  //  ps.invoke()
-  //    .then(output => {
-  //      console.log(output)
-  //      dispatch({ type: EXECUTE_SCRIPT, payload: output });
-  //    })
-  //    .catch(err => {
-  //      console.error(err)
-  //      dispatch({ type: EXECUTE_SCRIPT, payload: err });
-  //      ps.dispose()
-  //    })  
+  
+  window.ipcRenderer.send('exec-shellscript',currScript);
+  window.ipcRenderer.on('scriptResults', (evt, data) => {
+    dispatch({ type: EXECUTE_SCRIPT, payload: data });
+  });  
+  
 };
 
 

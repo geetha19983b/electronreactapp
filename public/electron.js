@@ -49,12 +49,12 @@ ipc.on('exec-shellscript', function (event, data) {
     console.log(ps.params);
   ps.invoke()
     .then(output => {
-      console.log(output)
+      //console.log(output)
       const responseop = {
         ...data,
         output: output
       };
-      console.log(responseop);
+      //console.log(responseop);
       mainWindow.webContents.send("scriptResults", responseop);
     })
     .catch(err => {

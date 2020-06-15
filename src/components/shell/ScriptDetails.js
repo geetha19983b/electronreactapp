@@ -10,26 +10,7 @@ class ScriptDetail extends React.Component {
 
    executeScript() {
      const currScript = this.props.script;
-    /*let ps = new window.powershell({
-      executionPolicy: 'Bypass',
-      noProfile: true
-    })
-
-    ps.addCommand(currScript.path)
-      .then(() => ps.addParameters([
-        currScript.params.map(parm => {
-          return `{${parm.paramName} : ${parm.paramValue}},`
-        })
-      ]));
-    const response = await ps.invoke();
-    const responseop = {
-      ...currScript,
-      output: response
-    };
-    this.props.executeScript(responseop); */
-
-    window.ipcRenderer.send('exec-shellscript',currScript
-    );
+     this.props.executeScript(currScript);
   }
 
   render() {
@@ -38,7 +19,7 @@ class ScriptDetail extends React.Component {
     }
 
     const { title, description, output } = this.props.script;
-    const currScript = this.props.script;
+    
     return (
       <div>
         <h1>{title}</h1>
