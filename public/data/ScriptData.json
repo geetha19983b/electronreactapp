@@ -1,0 +1,34 @@
+{
+  "results": [
+    {
+      "title": "GetDrivers",
+      "description": "This is a script to get the drive details in the machine",
+      "id": 1,
+      "path": "C:\\Users\\Geetha\\codes\\electron\\psscripts\\Get-Drives.ps1",
+      "params": [
+        {
+          "paramName": "ComputerName",
+          "paramValue": "DESKTOP-H34Q5DD"
+        }
+      ],
+      "execution":"",
+      "message": "",
+      "output": ""
+    },
+    {
+      "title": "TestPower",
+      "description": "This is a script to get the power details",
+      "id": 2,
+      "path": "C:\\Users\\Geetha\\codes\\electron\\psscripts\\Test-Power.ps1",
+      "params": [
+        {
+          "paramName": "anInt",
+          "paramValue": "10"
+        }
+      ],
+      "execution":"",
+      "message": "",
+      "output": ""
+    }
+  ]
+}

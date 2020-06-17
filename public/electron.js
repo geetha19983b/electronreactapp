@@ -5,6 +5,8 @@ const path = require('path');
 const ipc = electron.ipcMain;
 const isDev = require('electron-is-dev');
 const powershell = require('node-powershell');
+const fs = require("fs");
+
 let mainWindow;
 
 function createWindow() {
@@ -32,9 +34,19 @@ app.on('activate', () => {
   }
 });
 
+ipc.on("scripts:get", (event) => {
+  const scriptPath = path.join(__dirname,"data","ScriptData.json");
+
+  fs.readFile(scriptPath, (err, data) => {
+    if (err) throw err;
+    const scriptResponse = JSON.parse(data)['results'];
+    mainWindow.webContents.send("scripts:list",scriptResponse);
+  });
+});
+
 ipc.on('exec-shellscript', function (event, data) {
+  mainWindow.webContents.send("script:execution:inprogress",data);
   // Create the PS Instance
-  console.log(data);
   let ps = new powershell({
     executionPolicy: 'Bypass',
     noProfile: true
@@ -43,18 +55,16 @@ ipc.on('exec-shellscript', function (event, data) {
   ps.addCommand(data.path)
     .then(() => ps.addParameters([
       data.params.map(parm => {
-       return `{${parm.paramName} : ${parm.paramValue}},`
+        return `{${parm.paramName} : ${parm.paramValue}},`
       })
     ]));
-    console.log(ps.params);
+   
   ps.invoke()
     .then(output => {
-      //console.log(output)
       const responseop = {
         ...data,
         output: output
       };
-      //console.log(responseop);
       mainWindow.webContents.send("scriptResults", responseop);
     })
     .catch(err => {
@@ -120,34 +130,3 @@ ipc.on('exec-shellscript1', function (event, data) {
 
   child.stdin.end(); //end input
 });
-
-// function executePSScript(compName){
-//   // Create the PS Instance
-//   let ps = new powershell({
-//     executionPolicy: 'Bypass',
-//     noProfile: true
-//   })
-
-//   //ps.addCommand("\"Roads? Where we're going, we don't need roads.\"")
-//   //ps.addCommand("Get-Process -Name electron")
-
-//   ps.addCommand("./Test-Power", [
-//     { GigaWatts: 1.0 }
-//   ])
-//   let computer = compName;
-
-//   //ps.addCommand("./Get-Drives", [
-//    // { ComputerName: computer }
-//   //])
-//   // Pull the Trigger
-//   ps.invoke()
-//     .then(output => {
-//       console.log(output)
-//       let data = JSON.parse(output)
-//       console.log(data);
-//     })
-//     .catch(err => {
-//       console.error(err)
-//       ps.dispose()
-//     })
-// }

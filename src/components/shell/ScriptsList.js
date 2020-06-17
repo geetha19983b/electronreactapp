@@ -1,14 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchScripts } from '../../actions';
+import { fetchScripts,startFetchingScripts } from '../../actions';
+import { BounceLoader } from "react-spinners";
 
 class ScriptList extends React.Component {
+  
   componentDidMount() {
+    this.props.startFetchingScripts();
     this.props.fetchScripts();
   }
   renderList() {
-    return this.props.scripts.map(script => {
+   // console.log(typeof(this.props.scriptsList));
+    //console.log(this.props.scriptsList);
+    // return Object.keys(this.props.scriptsList).map((key,i) => {
+    //   console.log(key);
+    //   console.log(this.props.scriptsList[key]);
+      
+    // });
+    
+    return this.props.scriptsList.map(script => {
       return (
         <div className="item" key={script.id}>
           <i className="large middle aligned icon play" />
@@ -24,6 +35,12 @@ class ScriptList extends React.Component {
   }
 
   render() {
+    if (this.props.loading)
+    return (
+      <div>
+        <BounceLoader />
+      </div>
+    );
     return (
       <div>
         <h2>Scripts</h2>
@@ -33,14 +50,14 @@ class ScriptList extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = ({scripts}) => {
   return {
-    //scripts: Object.values(state.scripts)
-    scripts: state.scripts
+    loading:scripts.loading,
+    scriptsList:scripts.scriptsList
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchScripts }
+  { startFetchingScripts,fetchScripts }
 )(ScriptList);
